@@ -11,13 +11,18 @@ namespace StudentApiClient
 
         static async Task Main(string[] args)
         {
-            httpClient.BaseAddress = new Uri("http://localhost:5152/api/Students/Passed");
+            httpClient.BaseAddress = new Uri("http://localhost:5152/api/Students/");
 
-            await GetAllStudents();  
+            //await GetAllStudents();  
             
-            await GetPassedStudents();
+            //await GetPassedStudents();
 
-            await GetAverageGrade();
+            //await GetAverageGrade();
+
+            Console.Write("Enter Student ID: ");
+            int studentID = Convert.ToInt32(Console.ReadLine());
+
+            await GetStudentById(studentID);
 
 
         }
@@ -84,6 +89,44 @@ namespace StudentApiClient
             {
                 Console.WriteLine($"An error occurred : {ex.Message}");
             }
+        }
+
+
+        static async Task GetStudentById(int id)
+        {         
+            try
+            {
+                Console.WriteLine("\n_____________________________");
+                Console.WriteLine($"\nFetching student with ID {id}...\n");
+
+                var response = await httpClient.GetAsync($"{id}");
+
+                if(response.IsSuccessStatusCode)
+                {
+                    var student = await response.Content.ReadFromJsonAsync<Student>();
+                    if (student != null)
+                    {
+                        Console.WriteLine($" ID: {student.Id}");
+                        Console.WriteLine($" Name: {student.Name}");
+                        Console.WriteLine($" Age: {student.Age}");
+                        Console.WriteLine($" Grade: {student.Grade}");
+                    }   
+                }
+                else if(response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine($"Bad Request: Not accepted ID {id}");
+                }
+                else if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    Console.WriteLine($"Not Found: Student with ID {id} not found.");
+                }
+                
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+            
         }
 
     }
