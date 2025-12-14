@@ -12,6 +12,7 @@ Simple ASP.NET Web API with a small console client for learning purposes.
   - GET/api/Students/{id}
   - POST /api/Students/AddStudent
   - DELETE /api/Students/{id}
+  - PUT /api/Students/{id}
 
 
 ## Client
