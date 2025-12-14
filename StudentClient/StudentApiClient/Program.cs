@@ -19,17 +19,17 @@ namespace StudentApiClient
 
             //await GetAverageGrade();
 
-            //Console.Write("Enter Student ID: ");
-            //int studentID = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter Student ID: ");
+            int studentID = Convert.ToInt32(Console.ReadLine());
 
             //await GetStudentById(studentID);
 
-            var newStudent = new Student { Name = "Mazen Abdullah", Age = 20, Grade = 85 };
-            await AddStudent(newStudent); // Example: Add a new student
+            //var newStudent = new Student { Name = "Mazen Abdullah", Age = 20, Grade = 85 };
+            //await AddStudent(newStudent); // Example: Add a new student
+
+            DeleteStudent(studentID);
 
             await GetAllStudents();
-
-
         }
 
         static async Task GetAllStudents()
@@ -158,6 +158,35 @@ namespace StudentApiClient
                 {
                     Console.WriteLine("Bad Request: Invalid student data.");
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+        static async Task DeleteStudent(int id)
+        {
+            try
+            {
+                Console.WriteLine("\n_____________________________");
+                Console.WriteLine($"\nDeleting student with ID {id}...\n");
+
+                var response = await httpClient.DeleteAsync($"{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Student with ID {id} has been deleted.");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine($"Bad Request: Not accepted ID {id}");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    Console.WriteLine($"Not Found: Student with ID {id} not found.");
+                }
+
+                
             }
             catch (Exception ex)
             {
