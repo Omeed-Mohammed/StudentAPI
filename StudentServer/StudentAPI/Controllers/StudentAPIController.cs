@@ -120,5 +120,36 @@ namespace StudentAPI.Controllers
             return Ok($"Student with ID {id} has been deleted.");
         }
 
+
+
+
+        [HttpPut("{StudentID}", Name = "UpdateStudent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public ActionResult<Student> UpdateStudent(Student updateStudent)
+        {
+            if(updateStudent == null || updateStudent.Id < 1 || string.IsNullOrEmpty(updateStudent.Name) 
+                || updateStudent.Age < 0)
+            {
+                return BadRequest($"Invalid Student data .");
+            }
+
+            var student = StudentDataSimulation.StudentsList.FirstOrDefault(s => s.Id == updateStudent.Id);
+
+            if(student == null)
+            {
+                return NotFound($"Student with ID {updateStudent.Id} not found .");
+            }
+
+            student.Name = updateStudent.Name;
+            student.Age = updateStudent.Age;
+            student.Grade = updateStudent.Grade;
+
+            return Ok(student);
+
+        }
+
     }
 }
