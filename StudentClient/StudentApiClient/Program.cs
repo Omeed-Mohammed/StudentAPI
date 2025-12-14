@@ -44,8 +44,10 @@ namespace StudentApiClient
                 {
                     foreach (var student in students)
                     {
-                        Console.WriteLine($"ID : {student.Id} \n Name : {student.Name} " +
-                            $"\n Age :{student.Age}  \n Grade :{student.Grade}");
+                        Console.WriteLine($"ID : {student.Id}");
+                        Console.WriteLine($"Name : {student.Name}");
+                        Console.WriteLine($"Age : {student.Age}");
+                        Console.WriteLine($"Grade : {student.Grade}");
                     }
                 }
             }
