@@ -13,16 +13,21 @@ namespace StudentApiClient
         {
             httpClient.BaseAddress = new Uri("http://localhost:5152/api/Students/");
 
-            //await GetAllStudents();  
-            
+            await GetAllStudents();  
+
             //await GetPassedStudents();
 
             //await GetAverageGrade();
 
-            Console.Write("Enter Student ID: ");
-            int studentID = Convert.ToInt32(Console.ReadLine());
+            //Console.Write("Enter Student ID: ");
+            //int studentID = Convert.ToInt32(Console.ReadLine());
 
-            await GetStudentById(studentID);
+            //await GetStudentById(studentID);
+
+            var newStudent = new Student { Name = "Mazen Abdullah", Age = 20, Grade = 85 };
+            await AddStudent(newStudent); // Example: Add a new student
+
+            await GetAllStudents();
 
 
         }
@@ -127,6 +132,35 @@ namespace StudentApiClient
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
             
+        }
+
+        static async Task AddStudent(Student newStudent)
+        {
+            try
+            {
+                Console.WriteLine("\n_____________________________");
+                Console.WriteLine("\nAdding a new student...\n");
+
+                var response = await httpClient.PostAsJsonAsync("", newStudent);
+
+                if(response.IsSuccessStatusCode)
+                {
+                    var addedStudent = await response.Content.ReadFromJsonAsync<Student>();
+                    Console.WriteLine($"Added Student...");
+                    Console.WriteLine($"ID: {addedStudent.Id}");
+                    Console.WriteLine($"Name: {addedStudent.Name}");
+                    Console.WriteLine($"Age: {addedStudent.Age}");
+                    Console.WriteLine($"Grade: {addedStudent.Grade}");
+                }
+                else if(response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine("Bad Request: Invalid student data.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
         }
 
     }
