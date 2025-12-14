@@ -123,24 +123,24 @@ namespace StudentAPI.Controllers
 
 
 
-        [HttpPut("{StudentID}", Name = "UpdateStudent")]
+        [HttpPut("{id}", Name = "UpdateStudent")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public ActionResult<Student> UpdateStudent(Student updateStudent)
+        public ActionResult<Student> UpdateStudent(int id , Student updateStudent)
         {
-            if(updateStudent == null || updateStudent.Id < 1 || string.IsNullOrEmpty(updateStudent.Name) 
-                || updateStudent.Age < 0)
+            if(id < 1 || updateStudent == null || string.IsNullOrEmpty(updateStudent.Name) 
+                || updateStudent.Age < 0 || updateStudent.Grade < 0)
             {
                 return BadRequest($"Invalid Student data .");
             }
 
-            var student = StudentDataSimulation.StudentsList.FirstOrDefault(s => s.Id == updateStudent.Id);
+            var student = StudentDataSimulation.StudentsList.FirstOrDefault(s => s.Id == id);
 
             if(student == null)
             {
-                return NotFound($"Student with ID {updateStudent.Id} not found .");
+                return NotFound($"Student with ID {id} not found .");
             }
 
             student.Name = updateStudent.Name;

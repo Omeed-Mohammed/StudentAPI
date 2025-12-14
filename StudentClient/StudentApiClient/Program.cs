@@ -7,30 +7,83 @@ namespace StudentApiClient
     public class Program
     {
         static readonly HttpClient httpClient = new HttpClient();
-
+        
 
         static async Task Main(string[] args)
         {
             httpClient.BaseAddress = new Uri("http://localhost:5152/api/Students/");
 
-            await GetAllStudents();  
+            await GetAllStudents();
 
-            //await GetPassedStudents();
+            //await GetPassedStudents();S
 
             //await GetAverageGrade();
 
-            Console.Write("Enter Student ID: ");
+            Console.Write("\n\nEnter Student ID: ");
             int studentID = Convert.ToInt32(Console.ReadLine());
 
-            //await GetStudentById(studentID);
+            //var student = await GetStudentById(studentID);
 
             //var newStudent = new Student { Name = "Mazen Abdullah", Age = 20, Grade = 85 };
             //await AddStudent(newStudent); // Example: Add a new student
 
-            DeleteStudent(studentID);
+            //DeleteStudent(studentID);
+
+            var student = await InputStudentData(studentID);
+
+            await UpdateStudent(studentID, student);
 
             await GetAllStudents();
         }
+
+        //****************************************************************************************************
+        //public static async Task UpdateData(string message)
+        //{
+
+        //    Console.Write(message);
+
+        //    int studentID = Convert.ToInt32(Console.ReadLine());
+
+        //    var student = await GetStudentById(studentID);
+        //    if (student == null)
+        //        return;
+
+        //    InputStudentData(student);
+
+        //    await UpdateStudent(student.Id , student);
+        //}
+
+        public static async Task<Student> InputStudentData(int id)
+        {
+            var student = new Student();
+            student.Id = id;
+            Console.WriteLine("\n_____________________________");
+            Console.Write($"Enter Student Name : ");
+            student.Name = Console.ReadLine().ToString();
+
+            Console.Write($"\nEnter Student Age: ");
+            student.Age = Convert.ToInt32(Console.ReadLine());
+
+            Console.Write($"\nEnter Student Grade: ");
+            student.Grade = Convert.ToInt32(Console.ReadLine());
+
+            return student;
+        }
+
+        public static void PrintData(string message, Student student)
+        {
+            Console.WriteLine("\n_____________________________");
+            Console.WriteLine($"\n{message} ");
+
+            Console.WriteLine($"Added Student...");
+            Console.WriteLine($"ID: {student.Id}");
+            Console.WriteLine($"Name: {student.Name}");
+            Console.WriteLine($"Age: {student.Age}");
+            Console.WriteLine($"Grade: {student.Grade}");
+        }
+
+        //****************************************************************************************************
+
 
         static async Task GetAllStudents()
         {
@@ -99,7 +152,7 @@ namespace StudentApiClient
         }
 
 
-        static async Task GetStudentById(int id)
+        static async Task<Student>GetStudentById(int id)
         {         
             try
             {
@@ -117,6 +170,8 @@ namespace StudentApiClient
                         Console.WriteLine($" Name: {student.Name}");
                         Console.WriteLine($" Age: {student.Age}");
                         Console.WriteLine($" Grade: {student.Grade}");
+
+                        return student;
                     }   
                 }
                 else if(response.StatusCode == System.Net.HttpStatusCode.BadRequest)
@@ -133,7 +188,8 @@ namespace StudentApiClient
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
-            
+
+            return null;
         }
 
         static async Task AddStudent(Student newStudent)
@@ -187,6 +243,36 @@ namespace StudentApiClient
                 }
 
                 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+
+        static async Task UpdateStudent(int id, Student updatedStudent)
+        {
+            try
+            {
+                Console.WriteLine("\n_____________________________");
+                Console.WriteLine($"\nUpdating student with ID {id}...\n");
+                var response = await httpClient.PutAsJsonAsync($"{id}", updatedStudent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var student = await response.Content.ReadFromJsonAsync<Student>();
+                    PrintData("Updated Student:" , student);
+                    //Console.WriteLine($"Updated Student: ID: {student.Id}, Name: {student.Name}, Age: {student.Age}, Grade: {student.Grade}");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine("Failed to update student: Invalid data.");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    Console.WriteLine($"Student with ID {id} not found.");
+                }
             }
             catch (Exception ex)
             {
