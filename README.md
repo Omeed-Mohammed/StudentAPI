@@ -23,3 +23,8 @@ Simple ASP.NET Web API with a small console client for learning purposes.
 
 Educational practice project: API + client communication.
 
+
+## Data Storage
+
+- Uses SQL Server database
+- CRUD operations implemented via Stored Procedures
