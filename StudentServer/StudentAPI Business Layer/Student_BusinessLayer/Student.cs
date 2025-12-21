@@ -13,5 +13,21 @@ namespace Student_BusinessLayer
         {
             return StudentsData.GetAllStudents();
         }
+
+        public static List<StudentDTO> GetPassedStudents()
+        {
+            return StudentsData.GetPassedStudents();
+        }
+
+        public static List<StudentDTO> GetFailedStudents()
+        {
+            return StudentsData.GetFailedStudents();
+        }
+
+
+        public static double GetAverageGrade()
+        {
+            return StudentsData.GetAverageGrade();
+        }
     }
 }

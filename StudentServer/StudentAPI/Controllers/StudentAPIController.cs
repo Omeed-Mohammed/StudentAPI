@@ -35,15 +35,37 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public ActionResult<IEnumerable<Student>> GetPassedStudents()
+        public ActionResult<IEnumerable<StudentDTO>> GetPassedStudents()
         {
-            var passedStudents = StudentDataSimulation.StudentsList.Where(student => student.Grade >= 50).ToList();
+            //var passedStudents = StudentDataSimulation.StudentsList.Where(student => student.Grade >= 50).ToList();
 
-            if (passedStudents.Count == 0)
+            List< StudentDTO > StudentsList = Student_BusinessLayer.Student.GetPassedStudents();
+
+            if (StudentsList.Count == 0)
                 return NotFound("No Students Passed!");
 
-            return Ok(passedStudents);
+            return Ok(StudentsList);
         }
+
+
+
+        [HttpGet("Failed", Name = "GetFailedStudents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public ActionResult<IEnumerable<StudentDTO>> GetFailedStudents()
+        {
+            //var passedStudents = StudentDataSimulation.StudentsList.Where(student => student.Grade >= 50).ToList();
+
+            List<StudentDTO> StudentsList = Student_BusinessLayer.Student.GetFailedStudents();
+
+            if (StudentsList.Count == 0)
+                return NotFound("No Students Failed!");
+
+            return Ok(StudentsList);
+        }
+
+
 
 
 
@@ -53,10 +75,12 @@ namespace StudentAPI.Controllers
 
         public ActionResult<double> GetAverageGrade()
         {
-            if (StudentDataSimulation.StudentsList.Count == 0)
-                return NotFound("No Students Found");
+            //if (StudentDataSimulation.StudentsList.Count == 0)
+            //    return NotFound("No Students Found");
 
-            var averageGrade = StudentDataSimulation.StudentsList.Average(student => student.Grade);
+            //var averageGrade = StudentDataSimulation.StudentsList.Average(student => student.Grade);
+
+            var averageGrade = Student_BusinessLayer.Student.GetAverageGrade();
             return Ok(averageGrade);
         }
 
