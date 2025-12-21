@@ -4,23 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StudentAPIDataAccess_Layer
+namespace Student_DataAccessLayer
 {
     public class StudentDTO
     {
-        public int ID { get; set; }
+        public int id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
         public int Grade { get; set; }
 
-
-        public StudentDTO(int id , string name , int age , int grade) 
+        public StudentDTO(int id, string name, int age, int grade)
         {
-            ID = id;
-            Name = name;
-            Age = age;
-            Grade = grade;
+            this.id = id;
+            this.Name = name;
+            this.Age = age;
+            this.Grade = grade;
         }
-
     }
 }

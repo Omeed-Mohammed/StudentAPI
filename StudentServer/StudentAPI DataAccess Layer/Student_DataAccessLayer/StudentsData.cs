@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StudentAPIDataAccess_Layer
+namespace Student_DataAccessLayer
 {
     public class StudentsData
     {
-        public static List<StudentDTO>GetAllStudents()
+        public static List<StudentDTO> GetAllStudents()
         {
             var StudentsList = new List<StudentDTO>();
 

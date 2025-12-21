@@ -19,8 +19,8 @@ namespace StudentApiClient
 
             //await GetAverageGrade();
 
-            Console.Write("\n\nEnter Student ID: ");
-            int studentID = Convert.ToInt32(Console.ReadLine());
+            //Console.Write("\n\nEnter Student ID: ");
+            //int studentID = Convert.ToInt32(Console.ReadLine());
 
             //var student = await GetStudentById(studentID);
 
@@ -29,11 +29,11 @@ namespace StudentApiClient
 
             //DeleteStudent(studentID);
 
-            var student = await InputStudentData(studentID);
+            //var student = await InputStudentData(studentID);
 
-            await UpdateStudent(studentID, student);
+            //await UpdateStudent(studentID, student);
 
-            await GetAllStudents();
+            //await GetAllStudents();
         }
 
         //****************************************************************************************************

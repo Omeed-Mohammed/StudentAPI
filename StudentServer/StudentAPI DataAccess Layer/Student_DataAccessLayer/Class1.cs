@@ -1,4 +1,4 @@
-﻿namespace StudentAPIDataAccess_Layer
+﻿namespace Student_DataAccessLayer
 {
     public class Class1
     {

@@ -10,4 +10,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StudentAPI Business Layer\Student_BusinessLayer\Student_BusinessLayer.csproj" />
+  </ItemGroup>
+
 </Project>

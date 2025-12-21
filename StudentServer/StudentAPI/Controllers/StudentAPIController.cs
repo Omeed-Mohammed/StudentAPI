@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Student_DataAccessLayer;
 using StudentAPI.DataSimulation;
 using StudentAPI.Model;
 using System.Collections.Generic;
@@ -15,12 +16,17 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public ActionResult<IEnumerable<Student>> GetAllStudents()
+        public ActionResult<IEnumerable<StudentDTO>> GetAllStudents()
         {
-            if(StudentDataSimulation.StudentsList.Count == 0)
+            //if(StudentDataSimulation.StudentsList.Count == 0)
+            //    return NotFound("No Students Found!");
+            //return Ok(StudentDataSimulation.StudentsList); // Returns the List of Students.
+
+            List<StudentDTO> StudentsList = Student_BusinessLayer.Student.GetAllStudents();
+            if(StudentsList.Count == 0)
                 return NotFound("No Students Found!");
 
-            return Ok(StudentDataSimulation.StudentsList); // Returns the List of Students.
+            return Ok(StudentsList); // Returns the List of Students.
         }
 
 
