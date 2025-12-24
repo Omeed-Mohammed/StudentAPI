@@ -4,7 +4,7 @@ using Student_DataAccessLayer;
 using StudentAPI.DataSimulation;
 using StudentAPI.Model;
 using System.Collections.Generic;
-
+using Student_BusinessLayer;
 namespace StudentAPI.Controllers
 {
     //[Route("api/[controller]")]
@@ -92,17 +92,21 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public ActionResult<Student> GetStudentById(int id)
+        public ActionResult<StudentDTO> GetStudentById(int id)
         {
             if (id < 1)
                 return BadRequest($"Not accepted ID {id}");
 
-            var student = StudentDataSimulation.StudentsList.FirstOrDefault(s => s.Id == id);
+            //var student = StudentDataSimulation.StudentsList.FirstOrDefault(s => s.Id == id); this old Code
+
+            Student_BusinessLayer.Student student = Student_BusinessLayer.Student.Find(id);
 
             if (student == null)
                 return NotFound($"Student with ID {id} not found.");
 
-            return Ok(student);
+
+            StudentDTO SDTO = student.SDTO;
+            return Ok(SDTO);
         }
 
 
@@ -112,18 +116,26 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public ActionResult<Student> AddStudent(Student newStudent)
+        public ActionResult<StudentDTO> AddStudent(StudentDTO newStudentDTO)
         {
             //Validate the Data
-            if (newStudent == null || string.IsNullOrEmpty(newStudent.Name) || newStudent.Age < 0 || newStudent.Grade < 0)
+            if (newStudentDTO == null || string.IsNullOrEmpty(newStudentDTO.Name) || newStudentDTO.Age < 0 || newStudentDTO.Grade < 0)
             {
                 return BadRequest($"Invalid student data.");
             }
 
-            newStudent.Id = StudentDataSimulation.StudentsList.Count > 0 ? StudentDataSimulation.StudentsList.Max(s => s.Id) + 1 : 1; 
-            StudentDataSimulation.StudentsList.Add(newStudent);
+            //newStudent.Id = StudentDataSimulation.StudentsList.Count > 0 ? StudentDataSimulation.StudentsList.Max(s => s.Id) + 1 : 1; 
+            //StudentDataSimulation.StudentsList.Add(newStudent); this is old code
 
-            return CreatedAtRoute("GetStudentById" , new {id = newStudent.Id} , newStudent);
+            Student_BusinessLayer.Student student = new Student_BusinessLayer.Student(
+                new StudentDTO(newStudentDTO.id, newStudentDTO.Name, 
+                newStudentDTO.Age, newStudentDTO.Grade)); // we send no enum Mode because the Constructor take the Mode by Default AddNew Mode.
+
+            student.Save();
+
+            newStudentDTO .id = newStudentDTO.id;
+
+            return CreatedAtRoute("GetStudentById" , new {id = newStudentDTO.id} , newStudentDTO);
         }
 
 
@@ -139,15 +151,13 @@ namespace StudentAPI.Controllers
             {
                 return BadRequest($"Not accepted ID {id}");
             }
-
-            var student = StudentDataSimulation.StudentsList.FirstOrDefault(s => s.Id == id);
-            if (student == null)
+            if (Student_BusinessLayer.Student.DeleteStudent(id))
             {
-                return NotFound($"Student with ID {id} not found .");
+                return Ok($"Student with ID {id} has been deleted.");
+                
             }
-
-            StudentDataSimulation.StudentsList.Remove(student);
-            return Ok($"Student with ID {id} has been deleted.");
+            else
+                return NotFound($"Student with ID {id} not found .");
         }
 
 
@@ -157,8 +167,9 @@ namespace StudentAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
-        public ActionResult<Student> UpdateStudent(int id , Student updateStudent)
+        public ActionResult<StudentDTO> UpdateStudent(int id , StudentDTO updateStudent)
         {
             if(id < 1 || updateStudent == null || string.IsNullOrEmpty(updateStudent.Name) 
                 || updateStudent.Age < 0 || updateStudent.Grade < 0)
@@ -166,7 +177,9 @@ namespace StudentAPI.Controllers
                 return BadRequest($"Invalid Student data .");
             }
 
-            var student = StudentDataSimulation.StudentsList.FirstOrDefault(s => s.Id == id);
+            //var student = StudentDataSimulation.StudentsList.FirstOrDefault(s => s.Id == id);this is old Code
+
+            Student_BusinessLayer.Student student = Student_BusinessLayer.Student.Find(id);
 
             if(student == null)
             {
@@ -177,9 +190,16 @@ namespace StudentAPI.Controllers
             student.Age = updateStudent.Age;
             student.Grade = updateStudent.Grade;
 
-            return Ok(student);
+            if (student.Save())
+                return Ok(student.SDTO);
+
+            else
+                return StatusCode(500, new {message = "Error Updating Student"});
+
 
         }
+
+
 
     }
 }
